@@ -9,6 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: com.github.javaparser:javaparser-core:2.0.0" level="project" />
     <orderEntry type="module-library">
       <library name="Gradle: com.jetbrains:ideaIC:LATEST-EAP-SNAPSHOT">
         <CLASSES>
