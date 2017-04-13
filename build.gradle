@@ -1,4 +1,4 @@
-group 'com.android-viewbinder'
+group 'com.android.component.explorers'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
