@@ -7,6 +7,10 @@ public class FragmentUnit {
 
     private String name;
 
+    public FragmentUnit(String name){
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
