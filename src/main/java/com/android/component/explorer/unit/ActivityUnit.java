@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by parkjaesung on 2017. 4. 13..
  */
-public class ActivityUnit {
+public class ActivityUnit extends ComponentUnit {
 
     private String name;
     private List<FragmentUnit> fragments = new ArrayList<FragmentUnit>();
@@ -26,4 +26,5 @@ public class ActivityUnit {
     public void setName(String name) {
         this.name = name;
     }
+
 }
