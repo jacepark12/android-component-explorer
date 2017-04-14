@@ -7,12 +7,28 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public class ComponentUnit {
 
-    public VirtualFile virtualFile = null;
+    private VirtualFile virtualFile = null;
+    private String name;
 
+    public ComponentUnit(){
+
+    }
+
+    public ComponentUnit(String name){
+        this.name = name;
+    }
     public void setVirtualFile(VirtualFile virtualFile){
         this.virtualFile = virtualFile;
     };
     public VirtualFile getVirtualFile(){
         return this.virtualFile;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
