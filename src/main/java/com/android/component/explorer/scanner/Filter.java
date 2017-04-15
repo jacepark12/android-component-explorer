@@ -11,9 +11,11 @@ import java.util.Arrays;
  */
 public class Filter implements DirExplorer.Filter {
     private ArrayList<String> extension_filter = new ArrayList<String>(Arrays.asList("java"));
+    private ArrayList<String> filter_name = new ArrayList<String>(Arrays.asList("package-info.java"));
     public boolean interested(int level, String path, File file) {
         // Get filter only java class files
-        if(extension_filter.contains(Files.getFileExtension(file.getName()))){
+        //TODO Refactor
+        if(!path.contains("package-info") &&extension_filter.contains(Files.getFileExtension(file.getName()))){
             return true;
         }
         return false;
