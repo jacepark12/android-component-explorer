@@ -3,16 +3,16 @@ package com.android.component.explorer.manager;
 import com.android.component.explorer.unit.ActivityUnit;
 import com.android.component.explorer.unit.FragmentUnit;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by parkjaesung on 2017. 4. 13..
  */
 public class UnitManager {
     private static UnitManager instance;
-    private List<ActivityUnit> activities = new ArrayList<ActivityUnit>();
-    private List<FragmentUnit> fragments = new ArrayList<FragmentUnit>();
+
+    private HashMap<String, ActivityUnit> activities = new HashMap<String, ActivityUnit>();
+    private HashMap<String, FragmentUnit> fragments = new HashMap<String, FragmentUnit>();
 
     private UnitManager(){
 
@@ -25,31 +25,31 @@ public class UnitManager {
         return instance;
     }
 
-    public void addActivities(ActivityUnit activityUnit){
-        this.activities.add(activityUnit);
+    public void addActivities(String activityName, ActivityUnit activityUnit){
+        this.activities.put(activityName, activityUnit);
     }
 
-    public void addFragment(FragmentUnit fragmentUnit){
-        this.fragments.add(fragmentUnit);
+    public void addFragment(String fragmentName, FragmentUnit fragmentUnit){
+        this.fragments.put(fragmentName, fragmentUnit);
     }
 
     public boolean hasActivity(String activityName){
-        boolean result = false;
-        for (ActivityUnit activityUnit: activities) {
-            if(activityUnit.getName().equals(activityName)){
-                result = true;
-                break;
-            }
-        }
-
-        return result;
+        return this.activities.containsKey(activityName);
     }
 
-    public List<ActivityUnit> getActivities() {
+    public HashMap<String, ActivityUnit> getActivities() {
         return activities;
     }
 
-    public List<FragmentUnit> getFragments() {
+    public ActivityUnit getActivity(String activityName){
+        return this.activities.get(activityName);
+    }
+
+    public HashMap<String, FragmentUnit> getFragments() {
         return fragments;
+    }
+
+    public FragmentUnit getFragment(String fragmentName){
+        return this.fragments.get(fragmentName);
     }
 }

@@ -1,7 +1,6 @@
 package com.android.component.explorer.scanner;
 
 import com.android.component.explorer.manager.UnitManager;
-import com.android.component.explorer.unit.FragmentUnit;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -52,8 +51,10 @@ public class CalledFragmentScanner {
 
         for (String source: classSources) {
             System.out.println("source : " + source);
-            for(FragmentUnit fragment: unitManager.getFragments()){
-                if(source.contains(fragment.getName()) && source.contains("=")){
+
+            List<String> fragmentNames = new ArrayList<String>(unitManager.getFragments().keySet());
+            for(String fragmentName : fragmentNames){
+                if(source.contains(fragmentName) && source.contains("=")){
                     fragmentInstanceNames.add(source.split(" ")[1]);
                 }
             }
