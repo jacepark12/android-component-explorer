@@ -14,8 +14,9 @@ public class FilterTest {
     public void interested() throws Exception {
         DirExplorer.Filter filter = new Filter();
 
-        assertEquals(filter.interested(0, "/test/dir/test.java", new File("/test/dir/test.java")), true);
-        assertEquals(filter.interested(0, "/test/dir/test.cpp", new File("/test/dir/test.cpp")), false);
+        assertEquals(true, filter.interested(0, "/test/dir/test.java", new File("/test/dir/test.java")));
+        assertEquals(false, filter.interested(0, "/test/dir/test.cpp", new File("/test/dir/test.cpp")));
+        assertEquals(false, filter.interested(0, "/test/dir/test.txt", new File("/test/dir/text.txt")));
     }
 
 }
