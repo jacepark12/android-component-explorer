@@ -25,11 +25,11 @@ public class CalledFragmentScannerTest {
     public void setUp() throws Exception {
         UnitManager unitManager = UnitManager.getInstance();
 
-        unitManager.addFragment(new FragmentUnit("AddressBookFragment"));
-        unitManager.addFragment(new FragmentUnit("SendCheckFragment"));
-        unitManager.addFragment(new FragmentUnit("SettingFragment"));
-        unitManager.addFragment(new FragmentUnit("SelectTemplateFragment"));
-        unitManager.addFragment(new FragmentUnit("CreateCardFragment"));
+        unitManager.addFragment("AddressBookFragment" ,new FragmentUnit("AddressBookFragment"));
+        unitManager.addFragment("SendCheckFragment", new FragmentUnit("SendCheckFragment"));
+        unitManager.addFragment("SettingFragment", new FragmentUnit("SettingFragment"));
+        unitManager.addFragment("SelectTemplateFragment", new FragmentUnit("SelectTemplateFragment"));
+        unitManager.addFragment("CreateCardFragment", new FragmentUnit("CreateCardFragment"));
     }
 
     @Test
