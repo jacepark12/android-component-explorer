@@ -1,7 +1,9 @@
 package com.android.component.explorer.scanner;
 
 import com.android.component.explorer.manager.UnitManager;
+import com.android.component.explorer.unit.ActivityUnit;
 import com.github.javaparser.ParseException;
+import com.intellij.openapi.vfs.LocalFileSystem;
 
 import java.io.*;
 import java.util.HashSet;
@@ -30,8 +32,9 @@ public class FileHandler implements DirExplorer.FileHandler {
     }
 
     public void handle(int level, String path, File file) {
+        String className = "";
         try {
-            classParser.getParentClassName(file);
+             className = classParser.getParentClassName(file);
             System.out.println("Analyzed " + path + " Parent class name : " + classParser.getParentClassName(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -39,6 +42,11 @@ public class FileHandler implements DirExplorer.FileHandler {
             e.printStackTrace();
         }
 
+        if(activityClassNames.contains(className)){
+            ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+            unitManager.addActivity(getFileName(file), activityUnit);
+        }else if(fragmentClassNames.contains(className)){
+        }
     }
 
     public Set<String> getActivityClassNames() {
@@ -69,5 +77,11 @@ public class FileHandler implements DirExplorer.FileHandler {
         }
 
         return result;
+    }
+
+    public String getFileName(File file){
+        StringBuilder sb = new StringBuilder(file.getName());
+
+        return sb.substring(0, sb.lastIndexOf("."));
     }
 }
