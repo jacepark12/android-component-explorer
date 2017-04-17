@@ -17,11 +17,17 @@ public class FileHandlerTest {
     public void initializeTest(){
         FileHandler fileHandler = FileHandler.getInstance();
 
-        Set<String> expected = new HashSet<String>();
-        expected.add("Activity");
-        expected.add("AppCompatActivity");
+        Set<String> activityExpected = new HashSet<String>();
+        activityExpected.add("Activity");
+        activityExpected.add("AppCompatActivity");
 
-        assertEquals(expected, fileHandler.getActivityClassNames());
+        assertEquals(activityExpected, fileHandler.getActivityClassNames());
+
+        Set<String> fragmentExpected = new HashSet<String>();
+        fragmentExpected.add("Fragment");
+        fragmentExpected.add("DialogFragment");
+
+        assertEquals(fragmentExpected, fileHandler.getFragmentClassNames());
     }
 
 

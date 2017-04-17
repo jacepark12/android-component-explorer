@@ -18,24 +18,11 @@ public class FileHandler implements DirExplorer.FileHandler {
     ClassParser classParser = ClassParser.getInstance();
 
     Set<String> activityClassNames = new HashSet<String>();
+    Set<String> fragmentClassNames = new HashSet<String>();
 
     private FileHandler(){
-        try {
-
-            //System.out.println(String.valueOf(getClass().getResourceAsStream("activity_classes.properties")));
-            File file = new File(ClassLoader.getSystemClassLoader().getResource("activity_classes.properties").getPath());
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader((fileReader));
-
-            String line;
-            while((line = bufferedReader.readLine())!= null){
-                activityClassNames.add(line);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        activityClassNames = readPropertyByLine("activity_classes.properties");
+        fragmentClassNames = readPropertyByLine("fragment_classes.properties");
     }
 
     public static FileHandler getInstance(){
@@ -51,9 +38,36 @@ public class FileHandler implements DirExplorer.FileHandler {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
     }
 
     public Set<String> getActivityClassNames() {
         return activityClassNames;
+    }
+
+    public Set<String> getFragmentClassNames() {
+        return fragmentClassNames;
+    }
+
+    public Set<String> readPropertyByLine(String fileName){
+        HashSet<String> result = new HashSet<String>();
+        try {
+
+            //System.out.println(String.valueOf(getClass().getResourceAsStream("activity_classes.properties")));
+            File file = new File(ClassLoader.getSystemClassLoader().getResource(fileName).getPath());
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader((fileReader));
+
+            String line;
+            while((line = bufferedReader.readLine())!= null){
+                result.add(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
