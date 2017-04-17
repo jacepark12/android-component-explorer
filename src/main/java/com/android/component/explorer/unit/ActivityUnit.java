@@ -1,5 +1,7 @@
 package com.android.component.explorer.unit;
 
+import com.intellij.openapi.vfs.VirtualFile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,10 @@ public class ActivityUnit extends ComponentUnit {
 
     public ActivityUnit(String name){
         super(name);
+    }
+
+    public ActivityUnit(String name, VirtualFile virtualFile){
+        super(name, virtualFile);
     }
 
 }

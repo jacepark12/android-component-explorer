@@ -17,6 +17,11 @@ public class ComponentUnit {
     public ComponentUnit(String name){
         this.name = name;
     }
+
+    public ComponentUnit(String name, VirtualFile virtualFile){
+        this.name = name;
+        this.virtualFile = virtualFile;
+    }
     public void setVirtualFile(VirtualFile virtualFile){
         this.virtualFile = virtualFile;
     };
