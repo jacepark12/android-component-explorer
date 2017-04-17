@@ -80,7 +80,7 @@ public class ToolWindowTest implements ToolWindowFactory {
         System.out.println("scanning project");
         File file = new File(rootDir);
 
-        DirExplorer dirExplorer = new DirExplorer(new Filter(), new FileHandler());
+        DirExplorer dirExplorer = new DirExplorer(Filter.getInstance(), FileHandler.getInstance());
 
         dirExplorer.explore(file);
     }

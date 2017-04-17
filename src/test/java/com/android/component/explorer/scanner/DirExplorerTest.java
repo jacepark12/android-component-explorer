@@ -24,7 +24,7 @@ public class DirExplorerTest {
     @Before
     public void setUp(){
         fileHandler = FileHandler.getInstance();
-        filter = new Filter();
+        filter = Filter.getInstance();
         unitManager = UnitManager.getInstance();
     }
     @Test

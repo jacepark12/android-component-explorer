@@ -12,6 +12,20 @@ import java.util.Arrays;
 public class Filter implements DirExplorer.Filter {
     private ArrayList<String> extension_filter = new ArrayList<String>(Arrays.asList("java"));
     private ArrayList<String> filter_name = new ArrayList<String>(Arrays.asList("package-info.java"));
+
+    private static Filter instance;
+
+    private Filter(){
+
+    }
+
+    public static Filter getInstance(){
+        if(instance == null){
+            return instance = new Filter();
+        }
+        return instance;
+    }
+
     public boolean interested(int level, String path, File file) {
         // Get filter only java class files
         //TODO Refactor

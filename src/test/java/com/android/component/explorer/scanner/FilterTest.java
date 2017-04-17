@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class FilterTest {
     @Test
     public void interested() throws Exception {
-        DirExplorer.Filter filter = new Filter();
+        DirExplorer.Filter filter = Filter.getInstance();
 
         assertEquals(true, filter.interested(0, "/test/dir/test.java", new File("/test/dir/test.java")));
         assertEquals(false, filter.interested(0, "/test/dir/test.cpp", new File("/test/dir/test.cpp")));
