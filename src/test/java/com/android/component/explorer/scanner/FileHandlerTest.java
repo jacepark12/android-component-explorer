@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 public class FileHandlerTest {
 
     @Test
+    // Testing initializing code in FileHandler constructor
     public void initializeTest(){
         FileHandler fileHandler = FileHandler.getInstance();
 
