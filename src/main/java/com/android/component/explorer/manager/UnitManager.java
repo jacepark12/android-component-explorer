@@ -25,7 +25,7 @@ public class UnitManager {
         return instance;
     }
 
-    public void addActivities(String activityName, ActivityUnit activityUnit){
+    public void addActivity(String activityName, ActivityUnit activityUnit){
         this.activities.put(activityName, activityUnit);
     }
 
