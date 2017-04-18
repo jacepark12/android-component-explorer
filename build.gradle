@@ -32,3 +32,9 @@ buildscript {
 }
 
 apply plugin: 'org.jetbrains.intellij'
+
+intellij {
+    version 'IC-2017.1.1' //IntelliJ IDEA 2016.3 dependency; for a full list of IntelliJ IDEA releases please see
+    plugins 'coverage' //Bundled plugin dependencies
+    pluginName 'android-component-explorer'
+}
