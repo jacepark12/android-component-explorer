@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-component-explorer.iml" filepath="$PROJECT_DIR$/.idea/modules/android-component-explorer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-component-explorer_main.iml" filepath="$PROJECT_DIR$/.idea/modules/android-component-explorer_main.iml" group="android-viewbinder" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-component-explorer_test.iml" filepath="$PROJECT_DIR$/.idea/modules/android-component-explorer_test.iml" group="android-viewbinder" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-component.iml" filepath="$PROJECT_DIR$/.idea/modules/android-component.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-component_main.iml" filepath="$PROJECT_DIR$/.idea/modules/android-component_main.iml" group="android-component" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-component_test.iml" filepath="$PROJECT_DIR$/.idea/modules/android-component_test.iml" group="android-component" />
     </modules>
   </component>
 </project>
