@@ -24,4 +24,8 @@ public class ActivityUnit extends ComponentUnit {
         super(name, virtualFile);
     }
 
+    @Override
+    public String toString() {
+        return super.getName();
+    }
 }
