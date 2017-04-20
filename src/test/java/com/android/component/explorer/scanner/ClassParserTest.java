@@ -20,11 +20,6 @@ public class ClassParserTest {
     }
 
     @Test
-    public void getClassName1() throws Exception {
-
-    }
-
-    @Test
     public void getParentClassName() throws Exception {
         String sampleClassPath = rootPath.append("/src/test/java/com/android/component/explorer/scanner/sample/ActivitySample.java").toString();
         assertEquals(classParser.getParentClassName(new File(sampleClassPath)), "Activity");
