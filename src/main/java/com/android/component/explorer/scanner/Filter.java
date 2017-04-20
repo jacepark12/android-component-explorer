@@ -3,20 +3,23 @@ package com.android.component.explorer.scanner;
 import com.google.common.io.Files;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by parkjaesung on 2017. 4. 10..
  */
 public class Filter implements DirExplorer.Filter {
-    private ArrayList<String> extension_filter = new ArrayList<String>(Arrays.asList("java"));
-    private ArrayList<String> filter_name = new ArrayList<String>(Arrays.asList("package-info.java"));
+    private Set<String> extension_filter = new HashSet<String>();
+    private Set<String> filter_name = new HashSet<String>();
 
     private static Filter instance;
 
     private Filter(){
+        this.extension_filter.add("java");
+        this.extension_filter.add("xml");
 
+        this.filter_name.add("package-info.java");
     }
 
     public static Filter getInstance(){
@@ -27,11 +30,24 @@ public class Filter implements DirExplorer.Filter {
     }
 
     public boolean interested(int level, String path, File file) {
+        boolean result = true;
+
         // Get filter only java class files
         //TODO Refactor
-        if(!path.contains("package-info") &&extension_filter.contains(Files.getFileExtension(file.getName()))){
-            return true;
+        //check extension
+        if(!extension_filter.contains(Files.getFileExtension(file.getName()))){
+            result = false;
         }
-        return false;
+
+        if(filter_name.contains(file.getName())){
+            result = false;
+        }
+
+        //Do not explore build output direcotry
+        if(path.startsWith("/app/build")){
+           result = false;
+        }
+
+        return result;
     }
 }
