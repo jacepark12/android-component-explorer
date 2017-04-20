@@ -39,9 +39,9 @@ public class FileHandler implements DirExplorer.FileHandler {
     }
 
     public void handle(int level, String path, File file) {
-        String className = "";
+        String packageString = "";
         try {
-             className = classParser.getParentClassName(file);
+             packageString = classParser.getParentClassName(file);
             System.out.println("Analyzed " + path + " Parent class name : " + classParser.getParentClassName(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -49,12 +49,14 @@ public class FileHandler implements DirExplorer.FileHandler {
             e.printStackTrace();
         }
 
-        if(activityClassNames.contains(className)){
-            ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
-            unitManager.addActivity(getFileName(file), activityUnit);
-        }else if(fragmentClassNames.contains(className)){
-            FragmentUnit fragmentUnit = new FragmentUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
-            unitManager.addFragment(getFileName(file), fragmentUnit);
+        if(isAndroidPackage(packageString)) {
+            if (activityClassNames.contains(getClassNameFromPackage(packageString))) {
+                ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+                unitManager.addActivity(getFileName(file), activityUnit);
+            } else if (fragmentClassNames.contains(getClassNameFromPackage(packageString))) {
+                FragmentUnit fragmentUnit = new FragmentUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+                unitManager.addFragment(getFileName(file), fragmentUnit);
+            }
         }
     }
 
