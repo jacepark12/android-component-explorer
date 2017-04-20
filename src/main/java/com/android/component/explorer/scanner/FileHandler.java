@@ -2,6 +2,7 @@ package com.android.component.explorer.scanner;
 
 import com.android.component.explorer.manager.UnitManager;
 import com.android.component.explorer.unit.ActivityUnit;
+import com.android.component.explorer.unit.FragmentUnit;
 import com.github.javaparser.ParseException;
 import com.intellij.openapi.vfs.LocalFileSystem;
 
@@ -23,8 +24,14 @@ public class FileHandler implements DirExplorer.FileHandler {
     Set<String> fragmentClassNames = new HashSet<String>();
 
     private FileHandler(){
-        activityClassNames = readPropertyByLine("activity_classes.properties");
-        fragmentClassNames = readPropertyByLine("fragment_classes.properties");
+        activityClassNames.add("Activity");
+        activityClassNames.add("AppCompatActivity");
+
+        fragmentClassNames.add("Fragment");
+        fragmentClassNames.add("DialogFragment");
+        //TODO : Issue-> unable to read property file while running idea
+        //activityClassNames = readPropertyByLine("activity_classes.properties");
+        //fragmentClassNames = readPropertyByLine("fragment_classes.properties");
     }
 
     public static FileHandler getInstance(){
@@ -46,6 +53,8 @@ public class FileHandler implements DirExplorer.FileHandler {
             ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
             unitManager.addActivity(getFileName(file), activityUnit);
         }else if(fragmentClassNames.contains(className)){
+            FragmentUnit fragmentUnit = new FragmentUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+            unitManager.addFragment(getFileName(file), fragmentUnit);
         }
     }
 
@@ -83,5 +92,28 @@ public class FileHandler implements DirExplorer.FileHandler {
         StringBuilder sb = new StringBuilder(file.getName());
 
         return sb.substring(0, sb.lastIndexOf("."));
+    }
+
+    public String getClassNameFromPackage(String packageString) {
+        String[] parse = packageString.split("\\.");
+        if(parse.length == 0){
+            return packageString;
+        }else{
+            return parse[parse.length-1];
+        }
+    }
+
+    public boolean isAndroidPackage(String packageString){
+        boolean result = true;
+
+        String[] parse = packageString.split("\\.");
+
+        if(parse.length > 1){
+          if(!parse[0].equals("android")){
+              result = false;
+          }
+        }
+
+        return result;
     }
 }
