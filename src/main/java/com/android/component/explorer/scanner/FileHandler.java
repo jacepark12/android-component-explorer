@@ -4,6 +4,7 @@ import com.android.component.explorer.manager.UnitManager;
 import com.android.component.explorer.unit.ActivityUnit;
 import com.android.component.explorer.unit.FragmentUnit;
 import com.github.javaparser.ParseException;
+import com.google.common.io.Files;
 import com.intellij.openapi.vfs.LocalFileSystem;
 
 import java.io.*;
@@ -39,9 +40,19 @@ public class FileHandler implements DirExplorer.FileHandler {
     }
 
     public void handle(int level, String path, File file) {
+        String extension = Files.getFileExtension(file.getName());
+
+        if (extension.equals("java")){
+            handleJava(level, path, file);
+        }else if(extension.equals("xml")){
+            handleXML(level, path, file);
+        }
+    }
+
+    private void handleJava(int level, String path, File file){
         String packageString = "";
         try {
-             packageString = classParser.getParentClassName(file);
+            packageString = classParser.getParentClassName(file);
             System.out.println("Analyzed " + path + " Parent class name : " + classParser.getParentClassName(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -58,6 +69,10 @@ public class FileHandler implements DirExplorer.FileHandler {
                 unitManager.addFragment(getFileName(file), fragmentUnit);
             }
         }
+    }
+
+    private void handleXML(int level, String path, File file){
+
     }
 
     public Set<String> getActivityClassNames() {
