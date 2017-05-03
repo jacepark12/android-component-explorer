@@ -52,4 +52,9 @@ public class UnitManager {
     public FragmentUnit getFragment(String fragmentName){
         return this.fragments.get(fragmentName);
     }
+
+    public void clearUnits(){
+        this.activities.clear();
+        this.fragments.clear();
+    }
 }
