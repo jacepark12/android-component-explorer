@@ -23,7 +23,12 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="My sample tool window" anchor="right" factoryClass="com.android.component.explorer.ToolWindowTest"/>
+        <toolWindow id="android-component-explorer" anchor="right" factoryClass="com.android.component.explorer.ExplorerToolWindow"/>
+    </extensions>
+
+    <!-- extension for custom tree structure view -->
+    <extensions defaultExtensionNs="com.intellij">
+        <treeStructureProvider id="android-component-explorer" implementation="com.android.component.explorer.CustomTreeStructureProvider"/>
     </extensions>
 
     <actions>

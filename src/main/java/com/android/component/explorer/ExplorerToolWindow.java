@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import java.awt.event.*;
@@ -29,11 +30,12 @@ import java.util.Iterator;
 /**
  * Created by parkjaesung on 2017. 4. 10..
  */
-public class ToolWindowTest implements ToolWindowFactory {
+public class ExplorerToolWindow implements ToolWindowFactory {
     private JButton button1;
     private JPanel MainPanel2;
     private JLabel Label1;
     private JTree tree;
+    private JTable table1;
 
     private HashMap<String, ActivityUnit> activityMap;
     private HashMap<String, FragmentUnit> fragmentMap;
@@ -62,6 +64,12 @@ public class ToolWindowTest implements ToolWindowFactory {
         TreeModel treeModel = new DefaultTreeModel(root);
 
         tree.setModel(treeModel);
+
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        renderer.setLeafIcon(new ImageIcon("activity.png"));
+        //UIManager.put("Tree.leafIcon", getClass().getResource("activity.png"));
+       // tree.setCellRenderer(new ExplorerTreeRenderer());
+
         scanProject(vFiles[0].getCanonicalPath());
 
         button1.addActionListener(new ActionListener() {
@@ -104,6 +112,7 @@ public class ToolWindowTest implements ToolWindowFactory {
                 }
             }
         });
+
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
