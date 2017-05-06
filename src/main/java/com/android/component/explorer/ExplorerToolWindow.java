@@ -58,6 +58,7 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         System.out.println("length : " + vFiles.length);
         System.out.println("path : " + vFiles[0].getPath());
         System.out.println("canonicalpath : " + vFiles[0].getCanonicalPath());
+        scanProject(vFiles[0].getCanonicalPath());
 
         final DefaultMutableTreeNode activityNode = new DefaultMutableTreeNode("Activity");
         final DefaultMutableTreeNode fragmentNode = new DefaultMutableTreeNode("Fragment");
@@ -77,8 +78,6 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         //set table
         DefaultTableModel tableModel = new DefaultTableModel(rowData, colNames);
         statusTable.setModel(tableModel);
-
-        scanProject(vFiles[0].getCanonicalPath());
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
