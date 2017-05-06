@@ -147,6 +147,11 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
         UnitManager unitManager = UnitManager.getInstance();
 
+        //update Jtable
+        //set number of activities
+        this.statusTable.getModel().setValueAt(unitManager.getActivities().size(),0,1);
+        //set number of fragments
+        this.statusTable.getModel().setValueAt(unitManager.getFragments().size(),1,1);
         System.out.println(unitManager.getActivities().size());
         System.out.println(unitManager.getFragments().size());
     }
