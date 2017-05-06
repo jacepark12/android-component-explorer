@@ -18,6 +18,7 @@ import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -33,9 +34,14 @@ import java.util.Iterator;
 public class ExplorerToolWindow implements ToolWindowFactory {
     private JButton button1;
     private JPanel MainPanel2;
-    private JLabel Label1;
     private JTree tree;
-    private JTable table1;
+    private JTable statusTable;
+
+    String colNames[] = {"Component", "Number of Components"};
+    Object rowData[][] = {
+            {"Activity", 0},
+            {"Fragment", 0}
+    };
 
     private HashMap<String, ActivityUnit> activityMap;
     private HashMap<String, FragmentUnit> fragmentMap;
@@ -67,14 +73,15 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
         renderer.setLeafIcon(new ImageIcon("activity.png"));
-        //UIManager.put("Tree.leafIcon", getClass().getResource("activity.png"));
-       // tree.setCellRenderer(new ExplorerTreeRenderer());
+
+        //set table
+        DefaultTableModel tableModel = new DefaultTableModel(rowData, colNames);
+        statusTable.setModel(tableModel);
 
         scanProject(vFiles[0].getCanonicalPath());
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Label1.setText("Button Clicked");
                 scanProject(vFiles[0].getCanonicalPath());
 
                 activityMap = unitManager.getActivities();
