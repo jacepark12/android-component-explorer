@@ -58,6 +58,10 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         System.out.println("length : " + vFiles.length);
         System.out.println("path : " + vFiles[0].getPath());
         System.out.println("canonicalpath : " + vFiles[0].getCanonicalPath());
+        //set table
+        DefaultTableModel tableModel = new DefaultTableModel(rowData, colNames);
+        statusTable.setModel(tableModel);
+
         scanProject(vFiles[0].getCanonicalPath());
 
         final DefaultMutableTreeNode activityNode = new DefaultMutableTreeNode("Activity");
@@ -74,10 +78,6 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
         renderer.setLeafIcon(new ImageIcon("activity.png"));
-
-        //set table
-        DefaultTableModel tableModel = new DefaultTableModel(rowData, colNames);
-        statusTable.setModel(tableModel);
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
