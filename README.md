@@ -7,8 +7,8 @@ Android Studio & Intellij IDEA plugin for exploring android activity, fragments 
 # Getting Started 
 
 * Download from release
- * Download jar from release
- * Open preference -> plugins -> Install plugin from disk -> Select jar
+  * Download jar from release
+  * Open preference -> plugins -> Install plugin from disk -> Select jar
  
 * Install from Intellij plugin repo
 # FEATURE
