@@ -50,19 +50,8 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
     public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow toolWindow) {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        System.out.println("creatToolWindow");
         Content content = contentFactory.createContent(MainPanel2, "",false);
         toolWindow.getContentManager().addContent(content);
-
-        final VirtualFile[] vFiles = ProjectRootManager.getInstance(project).getContentRoots();
-        System.out.println("length : " + vFiles.length);
-        System.out.println("path : " + vFiles[0].getPath());
-        System.out.println("canonicalpath : " + vFiles[0].getCanonicalPath());
-        //set table
-        DefaultTableModel tableModel = new DefaultTableModel(rowData, colNames);
-        statusTable.setModel(tableModel);
-
-        scanProject(vFiles[0].getCanonicalPath());
 
         final DefaultMutableTreeNode activityNode = new DefaultMutableTreeNode("Activity");
         final DefaultMutableTreeNode fragmentNode = new DefaultMutableTreeNode("Fragment");
@@ -76,6 +65,17 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
         tree.setModel(treeModel);
 
+        final VirtualFile[] vFiles = ProjectRootManager.getInstance(project).getContentRoots();
+        System.out.println("length : " + vFiles.length);
+        System.out.println("path : " + vFiles[0].getPath());
+        System.out.println("canonicalpath : " + vFiles[0].getCanonicalPath());
+        //set table
+        DefaultTableModel tableModel = new DefaultTableModel(rowData, colNames);
+        statusTable.setModel(tableModel);
+
+        scanProject(vFiles[0].getCanonicalPath());
+        updateTree(activityNode, fragmentNode);
+
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
         renderer.setLeafIcon(new ImageIcon("activity.png"));
 
@@ -83,22 +83,8 @@ public class ExplorerToolWindow implements ToolWindowFactory {
             public void actionPerformed(ActionEvent e) {
                 scanProject(vFiles[0].getCanonicalPath());
 
-                activityMap = unitManager.getActivities();
-                fragmentMap = unitManager.getFragments();
+                updateTree(activityNode, fragmentNode);
 
-                Iterator iterator = activityMap.keySet().iterator();
-                //Set Activity node
-                while(iterator.hasNext()){
-                    DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityMap.get(iterator.next()));
-                    activityNode.add(activitySubNode);
-                }
-
-                //Set Fragment node
-                iterator = fragmentMap.keySet().iterator();
-                while (iterator.hasNext()){
-                    DefaultMutableTreeNode fragmentSubNode = new DefaultMutableTreeNode(fragmentMap.get(iterator.next()));
-                    fragmentNode.add(fragmentSubNode);
-                }
             }
         });
 
@@ -153,6 +139,25 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         this.statusTable.getModel().setValueAt(unitManager.getFragments().size(),1,1);
         System.out.println(unitManager.getActivities().size());
         System.out.println(unitManager.getFragments().size());
+    }
+
+    private void updateTree(DefaultMutableTreeNode activityNode, DefaultMutableTreeNode fragmentNode){
+        activityMap = unitManager.getActivities();
+        fragmentMap = unitManager.getFragments();
+
+        Iterator iterator = activityMap.keySet().iterator();
+        //Set Activity node
+        while(iterator.hasNext()){
+            DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityMap.get(iterator.next()));
+            activityNode.add(activitySubNode);
+        }
+
+        //Set Fragment node
+        iterator = fragmentMap.keySet().iterator();
+        while (iterator.hasNext()){
+            DefaultMutableTreeNode fragmentSubNode = new DefaultMutableTreeNode(fragmentMap.get(iterator.next()));
+            fragmentNode.add(fragmentSubNode);
+        }
     }
 
     public void openFileInEditor(Project project, VirtualFile virtualFile){
