@@ -1,5 +1,6 @@
 package com.android.component.explorer.scanner;
 
+import com.android.component.explorer.scanner.exception.ClassParseException;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -122,6 +123,29 @@ public class ClassParser {
         return classSources.get(classSources.indexOf("implements")+1);
     }
 
+    public String getLayoutXMLName(File classFile) throws FileNotFoundException, ParseException, ClassParseException {
+        String result = "";
+        ArrayList<String> classSources = getClassSourceList(classFile);
+
+        //search from back of sources
+        //setContentView method call can be duplicated, so should get last called layout
+        for(int i = classSources.size()-1; i>=0; i--){
+            if(classSources.get(i).contains("setContentView")){
+                result = getLayoutXMLNameFromMethod(classSources.get(i));
+                break;
+            }
+        }
+
+        if(result.equals("")){
+            throw new ClassParseException("No XML layout found in component class");
+        }
+
+        return result;
+    }
+
+    private String getLayoutXMLNameFromMethod(String methodString){
+        return methodString.replace("setContentView(", "").substring(0, methodString.length()-2).split(".")[2];
+    }
     //TODO Use CompliatioUnit util with DI
     private CompilationUnit getCompilationUnit(File file) throws ParseException, FileNotFoundException {
         FileInputStream in = new FileInputStream(file);
