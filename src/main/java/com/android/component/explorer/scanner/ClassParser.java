@@ -143,8 +143,9 @@ public class ClassParser {
         return result;
     }
 
-    private String getLayoutXMLNameFromMethod(String methodString){
-        return methodString.replace("setContentView(", "").substring(0, methodString.length()-2).split(".")[2];
+    public String getLayoutXMLNameFromMethod(String methodString){
+        String tmp = methodString.replace("setContentView(", "");
+        return tmp.substring(0, tmp.length()-2).split("\\.")[2];
     }
     //TODO Use CompliatioUnit util with DI
     private CompilationUnit getCompilationUnit(File file) throws ParseException, FileNotFoundException {

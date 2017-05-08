@@ -26,17 +26,11 @@ public class ClassParserTest {
     }
 
     @Test
-    public void getParentClassName1() throws Exception {
+    public void getLayoutXMLNameFromMethod() throws Exception{
+        String sampleMethodString = "setContentView(R.layout.activity_navigation_drawer);";
+        String expected = "activity_navigation_drawer";
 
-    }
-
-    @Test
-    public void getInterfaceName() throws Exception {
-
-    }
-
-    @Test
-    public void getInterfaceName1() throws Exception {
+        assertEquals(expected, classParser.getLayoutXMLNameFromMethod(sampleMethodString));
 
     }
 
