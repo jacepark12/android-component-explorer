@@ -5,7 +5,12 @@
 # GOAL
 Android Studio & Intellij IDEA plugin for exploring android activity, fragments in Android project
 # Getting Started 
-Install from Intellij plugin repo
+
+* Download from release
+ * Download jar from release
+ * Open preference -> plugins -> Install plugin from disk -> Select jar
+ 
+* Install from Intellij plugin repo
 # FEATURE
 
 # TODO
