@@ -10,4 +10,9 @@ public class LayoutUnit extends ComponentUnit{
     public LayoutUnit(String name, VirtualFile virtualFile){
         super(name, virtualFile);
     }
+
+    @Override
+    public String toString() {
+        return super.getName();
+    }
 }
