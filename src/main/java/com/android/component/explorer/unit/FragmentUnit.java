@@ -7,6 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public class FragmentUnit extends ComponentUnit {
 
+    private LayoutUnit layoutUnit;
+
     public FragmentUnit(String name){
         super(name);
     }
@@ -21,6 +23,14 @@ public class FragmentUnit extends ComponentUnit {
 
     public void setName(String name) {
         super.setName(name);
+    }
+
+    public LayoutUnit getLayoutUnit() {
+        return layoutUnit;
+    }
+
+    public void setLayoutUnit(LayoutUnit layoutUnit) {
+        this.layoutUnit = layoutUnit;
     }
 
     @Override

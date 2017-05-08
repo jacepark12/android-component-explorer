@@ -27,6 +27,14 @@ public class ActivityUnit extends ComponentUnit {
         this.layoutUnit = layoutUnit;
     }
 
+    public LayoutUnit getLayoutUnit() {
+        return layoutUnit;
+    }
+
+    public void setLayoutUnit(LayoutUnit layoutUnit) {
+        this.layoutUnit = layoutUnit;
+    }
+
     @Override
     public String toString() {
         return super.getName();
