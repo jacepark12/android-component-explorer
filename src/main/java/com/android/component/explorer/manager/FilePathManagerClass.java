@@ -7,17 +7,17 @@ import java.util.HashMap;
 /**
  * Created by parkjaesung on 2017. 5. 8..
  */
-public class FIlePathManagerClass {
+public class FilePathManagerClass {
 
-    private static FIlePathManagerClass instance;
+    private static FilePathManagerClass instance;
     private HashMap<String, String> xmlLayoutPath = new HashMap<String, String>();
-    private FIlePathManagerClass(){
+    private FilePathManagerClass(){
 
     }
 
-    public static FIlePathManagerClass getInstance(){
+    public static FilePathManagerClass getInstance(){
         if(instance == null){
-            return instance = new FIlePathManagerClass();
+            return instance = new FilePathManagerClass();
         }
         return instance;
     }
