@@ -6,13 +6,20 @@
 Android Studio & Intellij IDEA plugin for exploring android activity, fragments, layout xml in Android project
 # Getting Started 
 
+(Currently, new version of plugin is waiting approval of jetbrains in jetbrains plugin repository.
+Recommends to download from github release)
+
 * Download from release
   * Download jar from release
   * Open preference -> plugins -> Install plugin from disk -> Select jar
  
 * Install from Intellij plugin repo
    * https://plugins.jetbrains.com/plugin/9688-android-component-explorer/
-# FEATURE
+# Contribution
+
+* Open pull request are welcomed
+* Reach out to me directly at jspark141515.com
+* Please open issue if you have opinions for this project
 
 # TODO
  - [X] XML Layout file scanning
