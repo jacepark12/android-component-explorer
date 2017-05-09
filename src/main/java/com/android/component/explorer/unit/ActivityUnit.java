@@ -21,6 +21,6 @@ public class ActivityUnit extends ViewComponentUnit {
 
     @Override
     public String toString() {
-        return super.getName();
+        return super.getName()+".java";
     }
 }
