@@ -1,5 +1,6 @@
 package com.android.component.explorer;
 
+import com.android.component.explorer.manager.FileManagerClass;
 import com.android.component.explorer.manager.UnitManager;
 import com.android.component.explorer.scanner.DirExplorer;
 import com.android.component.explorer.scanner.FileHandler;
@@ -47,6 +48,7 @@ public class ExplorerToolWindow implements ToolWindowFactory {
     private HashMap<String, FragmentUnit> fragmentMap;
 
     UnitManager unitManager = UnitManager.getInstance();
+    FileManagerClass fileManagerClass = FileManagerClass.getInstance();
 
     public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow toolWindow) {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
@@ -73,11 +75,13 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         DefaultTableModel tableModel = new DefaultTableModel(rowData, colNames);
         statusTable.setModel(tableModel);
 
+        System.out.println("project root path  : " + vFiles[0].getCanonicalPath());
         scanProject(vFiles[0].getCanonicalPath());
         updateTree(activityNode, fragmentNode);
 
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
         renderer.setLeafIcon(new ImageIcon("activity.png"));
+        renderer.setOpenIcon(null);
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -97,7 +101,7 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
                     Object userObject = selectedNode.getUserObject();
 
-                    if(userObject instanceof ActivityUnit || userObject instanceof FragmentUnit){
+                    if(userObject instanceof ComponentUnit){
                         ComponentUnit componentUnit = (ComponentUnit)userObject;
                         openFileInEditor(project, componentUnit.getVirtualFile());
                     }
@@ -113,7 +117,7 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
                     Object userObject = selectedNode.getUserObject();
 
-                    if(userObject instanceof ActivityUnit || userObject instanceof FragmentUnit){
+                    if(userObject instanceof ComponentUnit){
                         ComponentUnit componentUnit = (ComponentUnit)userObject;
                         openFileInEditor(project, componentUnit.getVirtualFile());
                     }
@@ -124,10 +128,16 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
     private void scanProject(String rootDir){
         System.out.println("scanning project");
-        File file = new File(rootDir);
-
         DirExplorer dirExplorer = new DirExplorer(Filter.getInstance(), FileHandler.getInstance());
 
+        //scan xml layout resources dir first
+        File layoutResourceFile = new File(rootDir + "/app/src/main/res");
+        dirExplorer.setHandleAll(true);
+        dirExplorer.explore(layoutResourceFile);
+
+        File file = new File(rootDir);
+
+        dirExplorer.setHandleAll(false);
         dirExplorer.explore(file);
 
         UnitManager unitManager = UnitManager.getInstance();
@@ -139,6 +149,7 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         this.statusTable.getModel().setValueAt(unitManager.getFragments().size(),1,1);
         System.out.println(unitManager.getActivities().size());
         System.out.println(unitManager.getFragments().size());
+        System.out.println(fileManagerClass.getXmlLayoutFile().size());
     }
 
     private void updateTree(DefaultMutableTreeNode activityNode, DefaultMutableTreeNode fragmentNode){
@@ -148,14 +159,26 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         Iterator iterator = activityMap.keySet().iterator();
         //Set Activity node
         while(iterator.hasNext()){
-            DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityMap.get(iterator.next()));
+            ActivityUnit activityUnit = activityMap.get(iterator.next());
+            DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityUnit);
+
+            if(activityUnit.hasLayoutUnit()){
+                DefaultMutableTreeNode layoutSubNode = new DefaultMutableTreeNode(activityUnit.getLayoutUnit());
+                activitySubNode.add(layoutSubNode);
+            }
             activityNode.add(activitySubNode);
         }
 
         //Set Fragment node
         iterator = fragmentMap.keySet().iterator();
         while (iterator.hasNext()){
-            DefaultMutableTreeNode fragmentSubNode = new DefaultMutableTreeNode(fragmentMap.get(iterator.next()));
+            FragmentUnit fragmentUnit = fragmentMap.get(iterator.next());
+            DefaultMutableTreeNode fragmentSubNode = new DefaultMutableTreeNode(fragmentUnit);
+
+            if(fragmentUnit.hasLayoutUnit()){
+                DefaultMutableTreeNode layoutSubNode = new DefaultMutableTreeNode(fragmentUnit.getLayoutUnit());
+                fragmentSubNode.add(layoutSubNode);
+            }
             fragmentNode.add(fragmentSubNode);
         }
     }
