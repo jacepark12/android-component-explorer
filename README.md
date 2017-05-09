@@ -1,9 +1,9 @@
 # android-component-explorer
-### Custom navigator tree for android activity and fragment
+### Custom navigator tree for android activity, fragment, layout xml inflated by components
 ![](./screenshot/screenshot.gif)
 
 # GOAL
-Android Studio & Intellij IDEA plugin for exploring android activity, fragments in Android project
+Android Studio & Intellij IDEA plugin for exploring android activity, fragments, layout xml in Android project
 # Getting Started 
 
 * Download from release
@@ -11,11 +11,12 @@ Android Studio & Intellij IDEA plugin for exploring android activity, fragments 
   * Open preference -> plugins -> Install plugin from disk -> Select jar
  
 * Install from Intellij plugin repo
+   * https://plugins.jetbrains.com/plugin/9688-android-component-explorer/
 # FEATURE
 
 # TODO
+ - [X] XML Layout file scanning
  - [ ] AutoMatic Refresh  
- - [ ] XML Layout file scanning
  - [ ] Develop customTreeProvider
  
 # LICENSE
