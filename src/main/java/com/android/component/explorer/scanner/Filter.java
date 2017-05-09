@@ -43,8 +43,8 @@ public class Filter implements DirExplorer.Filter {
             result = false;
         }
 
-        //Do not explore build output direcotry
-        if(path.startsWith("/app/build")){
+        //explore /app/src directory
+        if(!path.startsWith("/app/src")){
            result = false;
         }
 
