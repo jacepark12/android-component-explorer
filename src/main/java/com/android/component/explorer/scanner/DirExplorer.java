@@ -6,6 +6,10 @@ import java.io.File;
  * Created by parkjaesung on 2017. 4. 10..
  */
 public class DirExplorer {
+
+    // if handle is true, explore all dir and handle all file
+    private boolean handleAll = false;
+
     public interface FileHandler {
         void handle(int level, String path, File file);
     }
@@ -22,6 +26,14 @@ public class DirExplorer {
         this.fileHandler = fileHandler;
     }
 
+    public boolean isHandleAll() {
+        return handleAll;
+    }
+
+    public void setHandleAll(boolean handleAll) {
+        this.handleAll = handleAll;
+    }
+
     public void explore(File root) {
         explore(0, "", root);
     }
@@ -32,11 +44,15 @@ public class DirExplorer {
                 explore(level + 1, path + "/" + child.getName(), child);
             }
         } else {
-            if (filter.interested(level, path, file)) {
+            if(handleAll){
+                System.out.println("handling : " + path);
+                fileHandler.handle(level, path, file);
+            }
+            else if (filter.interested(level, path, file)) {
+                System.out.println("handling : " + path);
                 fileHandler.handle(level, path, file);
             }
             System.out.println(path);
         }
     }
-
 }
