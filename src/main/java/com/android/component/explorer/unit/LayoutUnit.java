@@ -13,6 +13,6 @@ public class LayoutUnit extends ComponentUnit{
 
     @Override
     public String toString() {
-        return super.getName();
+        return super.getName() + ".xml";
     }
 }
