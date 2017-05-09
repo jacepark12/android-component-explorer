@@ -27,10 +27,14 @@ public class ClassParserTest {
 
     @Test
     public void getLayoutXMLNameFromMethod() throws Exception{
-        String sampleMethodString = "setContentView(R.layout.activity_navigation_drawer);";
-        String expected = "activity_navigation_drawer";
+        String sampleMethodString1 = "setContentView(R.layout.activity_navigation_drawer);";
+        String expected1 = "activity_navigation_drawer";
 
-        assertEquals(expected, classParser.getLayoutXMLNameFromMethod(sampleMethodString));
+        String sampleMethodString2 = "View view = inflater.inflate(R.layout.fragment_track,container,false);";
+        String expected2 = "fragment_track";
+
+        assertEquals(expected1, classParser.getLayoutXMLNameFromMethod(sampleMethodString1));
+        assertEquals(expected2, classParser.getLayoutXMLNameFromMethod(sampleMethodString2));
 
     }
 
