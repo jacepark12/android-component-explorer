@@ -81,7 +81,6 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
         renderer.setLeafIcon(new ImageIcon("activity.png"));
-        renderer.setOpenIcon(null);
 
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -160,13 +159,22 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         //Set Activity node
         while(iterator.hasNext()){
             ActivityUnit activityUnit = activityMap.get(iterator.next());
-            DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityUnit);
 
             if(activityUnit.hasLayoutUnit()){
+                DefaultMutableTreeNode activityFolderSubNode = new DefaultMutableTreeNode(activityUnit.getName());
+
+                DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityUnit);
                 DefaultMutableTreeNode layoutSubNode = new DefaultMutableTreeNode(activityUnit.getLayoutUnit());
-                activitySubNode.add(layoutSubNode);
+
+                activityFolderSubNode.add(activitySubNode);
+                activityFolderSubNode.add(layoutSubNode);
+
+                activityNode.add(activityFolderSubNode);
+            }else{
+                DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityUnit);
+
+                activityNode.add(activitySubNode);
             }
-            activityNode.add(activitySubNode);
         }
 
         //Set Fragment node
