@@ -6,11 +6,11 @@ import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by parkjaesung on 2017. 4. 13..
@@ -25,7 +25,7 @@ public class ClassParser {
      */
     public static ClassParser instance;
 
-    private ClassParser(){
+    private ClassParser() {
 
     }
 
@@ -34,9 +34,9 @@ public class ClassParser {
      *
      * @return the class parser
      */
-    public static ClassParser getInstance(){
+    public static ClassParser getInstance() {
 
-        if(instance == null){
+        if (instance == null) {
             return instance = new ClassParser();
         }
         return instance;
@@ -62,7 +62,7 @@ public class ClassParser {
      * @param compilationunit the compilationunit
      * @return the string
      */
-    public String getClassName(CompilationUnit compilationunit){
+    public String getClassName(CompilationUnit compilationunit) {
         return compilationunit.getTypes().get(0).getName();
     }
 
@@ -78,7 +78,7 @@ public class ClassParser {
     public String getParentClassName(File classFile) throws FileNotFoundException, ParseException {
         ArrayList<String> classSources = getClassSourceList(classFile);
 
-        return classSources.get(classSources.indexOf("extends")+1);
+        return classSources.get(classSources.indexOf("extends") + 1);
     }
 
     /**
@@ -92,7 +92,7 @@ public class ClassParser {
     public String getParentClassName(CompilationUnit compilationunit) throws FileNotFoundException, ParseException {
         ArrayList<String> classSources = getClassSourceList(compilationunit);
 
-        return classSources.get(classSources.indexOf("extends")+1);
+        return classSources.get(classSources.indexOf("extends") + 1);
     }
 
     /**
@@ -106,7 +106,7 @@ public class ClassParser {
     public String getInterfaceName(File classFile) throws FileNotFoundException, ParseException {
         ArrayList<String> classSources = getClassSourceList(classFile);
 
-        return classSources.get(classSources.indexOf("implements")+1);
+        return classSources.get(classSources.indexOf("implements") + 1);
     }
 
     /**
@@ -120,33 +120,53 @@ public class ClassParser {
     public String getInterfaceName(CompilationUnit compilationunit) throws FileNotFoundException, ParseException {
         ArrayList<String> classSources = getClassSourceList(compilationunit);
 
-        return classSources.get(classSources.indexOf("implements")+1);
+        return classSources.get(classSources.indexOf("implements") + 1);
     }
 
     public String getLayoutXMLName(File classFile) throws FileNotFoundException, ParseException, ClassParseException {
         String result = "";
-        ArrayList<String> classSources = getClassSourceList(classFile);
+        ArrayList<String> classSources = getClassLineByLine(classFile);
 
         //search from back of sources
         //setContentView method call can be duplicated, so should get last called layout
-        for(int i = classSources.size()-1; i>=0; i--){
-            if(classSources.get(i).contains("setContentView")){
-                result = getLayoutXMLNameFromMethod(classSources.get(i));
+
+        Pattern inflatePattern = Pattern.compile("[a-z]*?.inflate\\(\\S+\\);");
+        Pattern setContentViewPattern = Pattern.compile("[a-z]*.?setContentView\\(\\S+\\);");
+
+        for (int i = classSources.size() - 1; i >= 0; i--) {
+            String classSource = classSources.get(i);
+            classSource = classSource.replace(" ", "");
+            System.out.println("classSource : " + classSource);
+            Matcher matcher1 = inflatePattern.matcher(classSource);
+            Matcher matcher2 = setContentViewPattern.matcher(classSource);
+
+            if (matcher1.find()) {
+                result = getLayoutXMLNameFromMethod(classSource.substring(matcher1.start(), matcher1.end()));
+                break;
+            } else if (matcher2.find()) {
+                result = getLayoutXMLNameFromMethod(classSource.substring(matcher2.start(), matcher2.end()));
                 break;
             }
         }
 
-        if(result.equals("")){
-            throw new ClassParseException("No XML layout found in component class");
+        if (result.equals("")) {
+            throw new ClassParseException("No XML layout found in component class : " + classFile.getName());
         }
 
         return result;
     }
 
-    public String getLayoutXMLNameFromMethod(String methodString){
-        String tmp = methodString.replace("setContentView(", "");
-        return tmp.substring(0, tmp.length()-2).split("\\.")[2];
+    public String getLayoutXMLNameFromMethod(String methodString) {
+        Pattern pattern = Pattern.compile("\\(\\S+\\)");
+        Matcher matcher = pattern.matcher(methodString);
+        matcher.find();
+
+        String tmp = methodString.substring(matcher.start(), matcher.end());
+        tmp = tmp.replaceAll("[()]", "");
+
+        return tmp.split(",")[0].split("\\.")[2];
     }
+
     //TODO Use CompliatioUnit util with DI
     private CompilationUnit getCompilationUnit(File file) throws ParseException, FileNotFoundException {
         FileInputStream in = new FileInputStream(file);
@@ -160,6 +180,20 @@ public class ClassParser {
         CompilationUnit compilationunit = getCompilationUnit(classFile);
         String classSource = compilationunit.getTypes().get(0).toString();
         return new ArrayList<String>(Arrays.asList(classSource.split(" ")));
+    }
+
+    private ArrayList<String> getClassLineByLine(File classFile){
+        ArrayList<String> result = new ArrayList<String>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(classFile));
+            String line;
+            while ((line = br.readLine()) != null) {
+                result.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @NotNull
