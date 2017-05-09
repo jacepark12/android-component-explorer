@@ -1,8 +1,12 @@
 package com.android.component.explorer.scanner;
 
+import com.android.component.explorer.manager.FileManagerClass;
 import com.android.component.explorer.manager.UnitManager;
+import com.android.component.explorer.manager.exception.XmlLayoutNotFound;
+import com.android.component.explorer.scanner.exception.ClassParseException;
 import com.android.component.explorer.unit.ActivityUnit;
 import com.android.component.explorer.unit.FragmentUnit;
+import com.android.component.explorer.unit.LayoutUnit;
 import com.github.javaparser.ParseException;
 import com.google.common.io.Files;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -20,6 +24,7 @@ public class FileHandler implements DirExplorer.FileHandler {
 
     UnitManager unitManager = UnitManager.getInstance();
     ClassParser classParser = ClassParser.getInstance();
+    FileManagerClass fileManagerClass = FileManagerClass.getInstance();
 
     Set<String> activityClassNames = new HashSet<String>();
     Set<String> fragmentClassNames = new HashSet<String>();
@@ -44,8 +49,8 @@ public class FileHandler implements DirExplorer.FileHandler {
 
         if (extension.equals("java")){
             handleJava(level, path, file);
-        }else if(extension.equals("xml")){
-            handleXML(level, path, file);
+        }else if(extension.equals("xml") && isLayoutResourceDir(path)){
+            handleLayoutXML(level, path, file);
         }
     }
 
@@ -63,16 +68,48 @@ public class FileHandler implements DirExplorer.FileHandler {
         if(isAndroidPackage(packageString)) {
             if (activityClassNames.contains(getClassNameFromPackage(packageString))) {
                 ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+                //save layoutUnit
+                try {
+                    activityUnit.setLayoutUnit(getLayoutUnitFromComponent(file));
+                    System.out.println("SetLayoutUnit of : " + file.getName());
+                } catch (XmlLayoutNotFound xmlLayoutNotFound) {
+                    xmlLayoutNotFound.printStackTrace();
+                }
+
                 unitManager.addActivity(getFileName(file), activityUnit);
             } else if (fragmentClassNames.contains(getClassNameFromPackage(packageString))) {
                 FragmentUnit fragmentUnit = new FragmentUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+
+                try {
+                    fragmentUnit.setLayoutUnit(getLayoutUnitFromComponent(file));
+                } catch (XmlLayoutNotFound xmlLayoutNotFound) {
+                    xmlLayoutNotFound.printStackTrace();
+                }
+
                 unitManager.addFragment(getFileName(file), fragmentUnit);
             }
         }
     }
 
-    private void handleXML(int level, String path, File file){
+    private LayoutUnit getLayoutUnitFromComponent(File classFile) throws XmlLayoutNotFound {
+        String layoutFileName = "";
+        try {
+            layoutFileName = classParser.getLayoutXMLName(classFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (ClassParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("getLayoutUnitFromComponent : " + layoutFileName);
+        return new LayoutUnit(layoutFileName, LocalFileSystem.getInstance().findFileByIoFile(fileManagerClass.getXmlLayoutFileByName(layoutFileName)));
+    }
 
+    private void handleLayoutXML(int level, String path, File file){
+        System.out.println("Save xml layout : " + file.getName());
+        //save layout xml to FileManagerClass
+        fileManagerClass.addXmlLayoutFile(getFileName(file), file);
     }
 
     public Set<String> getActivityClassNames() {
@@ -132,5 +169,15 @@ public class FileHandler implements DirExplorer.FileHandler {
         }
 
         return result;
+    }
+
+    private boolean isLayoutResourceDir(String path){
+        //app/src/main/res/layout/~~~.xml
+        //-> check if xml file is in layout dir or not
+        path = path.substring(0,path.lastIndexOf("/"));
+        path = path.substring(path.lastIndexOf("/")+1);
+
+        System.out.println("isLayoutResourceDir : " + path);
+        return path.equals("layout");
     }
 }
