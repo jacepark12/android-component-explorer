@@ -33,7 +33,7 @@ public class FileManagerClass {
 
     public File getXmlLayoutFileByName(String name) throws XmlLayoutNotFound {
         if(!this.xmlLayoutFile.containsKey(name)){
-            throw new XmlLayoutNotFound("No" + name + "XML layout found in project ");
+            throw new XmlLayoutNotFound("No " + name + " XML layout found in project ");
         }
 
         return this.xmlLayoutFile.get(name);
