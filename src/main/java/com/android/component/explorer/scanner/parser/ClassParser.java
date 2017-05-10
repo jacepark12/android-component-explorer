@@ -1,4 +1,4 @@
-package com.android.component.explorer.scanner;
+package com.android.component.explorer.scanner.parser;
 
 import com.android.component.explorer.scanner.exception.ClassParseException;
 import com.github.javaparser.JavaParser;
@@ -190,6 +190,7 @@ public class ClassParser {
             while ((line = br.readLine()) != null) {
                 result.add(line);
             }
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
