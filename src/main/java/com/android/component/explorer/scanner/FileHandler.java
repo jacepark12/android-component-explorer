@@ -4,6 +4,7 @@ import com.android.component.explorer.manager.FileManagerClass;
 import com.android.component.explorer.manager.UnitManager;
 import com.android.component.explorer.manager.exception.XmlLayoutNotFound;
 import com.android.component.explorer.scanner.exception.ClassParseException;
+import com.android.component.explorer.scanner.parser.ClassParser;
 import com.android.component.explorer.unit.ActivityUnit;
 import com.android.component.explorer.unit.FragmentUnit;
 import com.android.component.explorer.unit.LayoutUnit;
@@ -44,6 +45,12 @@ public class FileHandler implements DirExplorer.FileHandler {
         return instance;
     }
 
+    //Method for executing tasks which should be executed before main handling
+    public void preHandle(int level, String path, File file){
+        //save class and parent class
+
+    }
+
     public void handle(int level, String path, File file) {
         String extension = Files.getFileExtension(file.getName());
 
@@ -65,8 +72,8 @@ public class FileHandler implements DirExplorer.FileHandler {
             e.printStackTrace();
         }
 
-        if(isAndroidPackage(packageString)) {
-            if (activityClassNames.contains(getClassNameFromPackage(packageString))) {
+        if(classParser.isAndroidPackage(packageString)) {
+            if (activityClassNames.contains(classParser.getClassNameFromPackage(packageString))) {
                 ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
                 //save layoutUnit
                 try {
@@ -77,7 +84,7 @@ public class FileHandler implements DirExplorer.FileHandler {
                 }
 
                 unitManager.addActivity(getFileName(file), activityUnit);
-            } else if (fragmentClassNames.contains(getClassNameFromPackage(packageString))) {
+            } else if (fragmentClassNames.contains(classParser.getClassNameFromPackage(packageString))) {
                 FragmentUnit fragmentUnit = new FragmentUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
 
                 try {
@@ -133,6 +140,8 @@ public class FileHandler implements DirExplorer.FileHandler {
             while((line = bufferedReader.readLine())!= null){
                 result.add(line);
             }
+
+            bufferedReader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -146,29 +155,6 @@ public class FileHandler implements DirExplorer.FileHandler {
         StringBuilder sb = new StringBuilder(file.getName());
 
         return sb.substring(0, sb.lastIndexOf("."));
-    }
-
-    public String getClassNameFromPackage(String packageString) {
-        String[] parse = packageString.split("\\.");
-        if(parse.length == 0){
-            return packageString;
-        }else{
-            return parse[parse.length-1];
-        }
-    }
-
-    public boolean isAndroidPackage(String packageString){
-        boolean result = true;
-
-        String[] parse = packageString.split("\\.");
-
-        if(parse.length > 1){
-          if(!parse[0].equals("android")){
-              result = false;
-          }
-        }
-
-        return result;
     }
 
     private boolean isLayoutResourceDir(String path){

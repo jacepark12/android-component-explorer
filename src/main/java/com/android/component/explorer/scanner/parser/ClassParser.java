@@ -23,7 +23,7 @@ public class ClassParser {
     /**
      * The constant instance.
      */
-    public static ClassParser instance;
+    private static ClassParser instance;
 
     private ClassParser() {
 
@@ -201,5 +201,28 @@ public class ClassParser {
     private ArrayList<String> getClassSourceList(CompilationUnit compilationunit) throws ParseException, FileNotFoundException {
         String classSource = compilationunit.getTypes().get(0).toString();
         return new ArrayList<String>(Arrays.asList(classSource.split(" ")));
+    }
+
+    public boolean isAndroidPackage(String packageString){
+        boolean result = true;
+
+        String[] parse = packageString.split("\\.");
+
+        if(parse.length > 1){
+            if(!parse[0].equals("android")){
+                result = false;
+            }
+        }
+
+        return result;
+    }
+
+    public String getClassNameFromPackage(String packageString) {
+        String[] parse = packageString.split("\\.");
+        if(parse.length == 0){
+            return packageString;
+        }else{
+            return parse[parse.length-1];
+        }
     }
 }
