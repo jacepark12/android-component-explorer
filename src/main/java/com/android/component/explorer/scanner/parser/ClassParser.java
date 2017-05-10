@@ -261,17 +261,12 @@ public class ClassParser {
     }
 
     public boolean isAndroidPackage(String packageString){
-        boolean result = true;
 
-        String[] parse = packageString.split("\\.");
-
-        if(parse.length > 1){
-            if(!parse[0].equals("android")){
-                result = false;
-            }
+        if(packageString.matches("android\\S+;")){
+            return true;
         }
 
-        return result;
+        return false;
     }
 
     public String getClassNameFromPackage(String packageString) {
