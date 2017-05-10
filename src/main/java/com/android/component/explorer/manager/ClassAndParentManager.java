@@ -22,8 +22,8 @@ public class ClassAndParentManager {
         return instance;
     }
 
-    public void setClassAndParent(String child, String parent){
-        this.classAndParent.put(child, parent);
+    public void setClassAndParent(String childPackage, String parentPackage){
+        this.classAndParent.put(childPackage, parentPackage);
     }
 
     public String getParentPackageByChild(String child){
