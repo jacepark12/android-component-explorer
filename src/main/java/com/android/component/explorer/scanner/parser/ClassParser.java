@@ -111,6 +111,21 @@ public class ClassParser {
         return classSources.get(classSources.indexOf("extends") + 1);
     }
 
+    public boolean hasParentClass(File classFile){
+        ArrayList<String> classSources = getClassLineByLine(classFile);
+
+        boolean result = false;
+
+        for(String classSource : classSources){
+            if(classSource.matches("public\\sclass\\s\\S+\\sextends\\s\\S+.*")){
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     /**
      * Gets parent class name.
      *

@@ -68,4 +68,16 @@ public class ClassParserTest {
 
         assertEquals(expected, classParser.getParentClassFullPackage(new File(sampleClassPath)));
     }
+
+    @Test
+    public void hasParentClass(){
+        boolean expected1 = true;
+        String sampleClassPath1 = System.getProperty("user.dir") + "/src/test/java/com/android/component/explorer/scanner/sample/ActivitySample.java";
+
+        boolean expected2 = false;
+        String sampleClassPath2 = System.getProperty("user.dir") + "/src/test/java/com/android/component/explorer/scanner/sample/ActivitySample2.java";
+
+        assertEquals(expected1, classParser.hasParentClass(new File(sampleClassPath1)));
+        assertEquals(expected2, classParser.hasParentClass(new File(sampleClassPath2)));
+    }
 }
