@@ -23,12 +23,12 @@ public class FileHandler implements DirExplorer.FileHandler {
 
     private static FileHandler instance = new FileHandler();
 
-    UnitManager unitManager = UnitManager.getInstance();
-    ClassParser classParser = ClassParser.getInstance();
-    FileManagerClass fileManagerClass = FileManagerClass.getInstance();
+    private UnitManager unitManager = UnitManager.getInstance();
+    private ClassParser classParser = ClassParser.getInstance();
+    private FileManagerClass fileManagerClass = FileManagerClass.getInstance();
 
-    Set<String> activityClassNames = new HashSet<String>();
-    Set<String> fragmentClassNames = new HashSet<String>();
+    private Set<String> activityClassNames = new HashSet<String>();
+    private Set<String> fragmentClassNames = new HashSet<String>();
 
     private FileHandler(){
         activityClassNames.add("Activity");
