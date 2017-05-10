@@ -63,8 +63,8 @@ public class ClassParserTest {
 
     @Test
     public void getParentClassFullPackage() throws FileNotFoundException, ParseException {
-        String expected = "com.android.component.explorer.scanner.sample.Activity";
-        String sampleClassPath = rootPath.append("/src/test/java/com/android/component/explorer/scanner/sample/ActivitySample.java").toString();
+        String expected = "com.android.component.explorer.scanner.sample2.Activity2";
+        String sampleClassPath = rootPath.append("/src/test/java/com/android/component/explorer/scanner/sample/ActivitySample2.java").toString();
 
         assertEquals(expected, classParser.getParentClassFullPackage(new File(sampleClassPath)));
     }
