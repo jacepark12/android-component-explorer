@@ -1,8 +1,11 @@
 package com.android.component.explorer.scanner;
 
+import com.android.component.explorer.scanner.parser.ClassParser;
+import com.github.javaparser.ParseException;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,4 +41,31 @@ public class ClassParserTest {
 
     }
 
+    @Test
+    public void getClassNameFromPackage() throws Exception {
+        assertEquals("AppCompatActivity" , classParser.getClassNameFromPackage("AppCompatActivity"));
+        assertEquals("DialogFragment" , classParser.getClassNameFromPackage("android.support.v4.app.DialogFragment"));
+    }
+
+    @Test
+    public void isAndroidPackage() throws Exception {
+        assertEquals(true, classParser.isAndroidPackage("Activity"));
+        assertEquals(false, classParser.isAndroidPackage("this.is.test.case.android"));
+        assertEquals(true, classParser.isAndroidPackage("android.test.case"));
+    }
+    @Test
+    public void getFullClassName(){
+        String expected = "com.android.component.explorer.scanner.sample.ActivitySample";
+        String sampleClassPath = rootPath.append("/src/test/java/com/android/component/explorer/scanner/sample/ActivitySample.java").toString();
+
+        assertEquals(expected, classParser.getFullClassName(new File(sampleClassPath)));
+    }
+
+    @Test
+    public void getParentClassFullPackage() throws FileNotFoundException, ParseException {
+        String expected = "com.android.component.explorer.scanner.sample.Activity";
+        String sampleClassPath = rootPath.append("/src/test/java/com/android/component/explorer/scanner/sample/ActivitySample.java").toString();
+
+        assertEquals(expected, classParser.getParentClassFullPackage(new File(sampleClassPath)));
+    }
 }

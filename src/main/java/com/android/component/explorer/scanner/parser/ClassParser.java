@@ -42,6 +42,25 @@ public class ClassParser {
         return instance;
     }
 
+    public String getClassPackage(File classFile){
+        String packageName = "";
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(classFile));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.matches("package\\s\\S+;")){
+                    packageName = line.split(" ")[1].replaceAll(";", "");
+                    break;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return packageName;
+    }
     /**
      * Gets class name.
      *
@@ -57,6 +76,18 @@ public class ClassParser {
     }
 
     /**
+     * Get full class name string. (Class name + package)
+     *
+     * @param classFile the class file
+     * @return the string
+     */
+    public String getFullClassName(File classFile){
+        String className = classFile.getName().replace(".java", "");
+
+        return getClassPackage(classFile) + "." + className;
+    }
+
+    /**
      * Get class name string.
      *
      * @param compilationunit the compilationunit
@@ -65,7 +96,6 @@ public class ClassParser {
     public String getClassName(CompilationUnit compilationunit) {
         return compilationunit.getTypes().get(0).getName();
     }
-
 
     /**
      * Gets parent class name.
@@ -93,6 +123,33 @@ public class ClassParser {
         ArrayList<String> classSources = getClassSourceList(compilationunit);
 
         return classSources.get(classSources.indexOf("extends") + 1);
+    }
+
+    public String getParentClassFullPackage(File classFile) throws FileNotFoundException, ParseException {
+        String parentClass = getParentClassName(classFile);
+        String regexr = "import \\S+" + parentClass;
+
+        String parentClassFullPackage = "";
+
+        boolean importFound = false;
+
+        ArrayList<String> classSources = getClassLineByLine(classFile);
+
+        for(String classSource : classSources){
+            if(classSource.matches(regexr)){
+                parentClassFullPackage = classSource.split(" ")[1].replaceAll(";", "");
+
+                importFound = true;
+                break;
+            }
+        }
+
+        //if importing is not found, parent class is in sample package with child class
+        if (!importFound){
+            parentClassFullPackage = getClassPackage(classFile) + "." + parentClass;
+        }
+
+        return parentClassFullPackage;
     }
 
     /**
