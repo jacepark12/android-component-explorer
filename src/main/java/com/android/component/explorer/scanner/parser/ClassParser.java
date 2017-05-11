@@ -280,11 +280,7 @@ public class ClassParser {
 
     public boolean isAndroidPackage(String packageString){
 
-        if(packageString.matches("android\\S+;")){
-            return true;
-        }
-
-        return false;
+        return packageString.matches("android\\S+");
     }
 
     public String getClassNameFromPackage(String packageString) {
