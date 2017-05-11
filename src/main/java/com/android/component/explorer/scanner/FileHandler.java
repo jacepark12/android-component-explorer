@@ -1,5 +1,6 @@
 package com.android.component.explorer.scanner;
 
+import com.android.component.explorer.manager.ClassAndParentManager;
 import com.android.component.explorer.manager.FileManagerClass;
 import com.android.component.explorer.manager.UnitManager;
 import com.android.component.explorer.manager.exception.XmlLayoutNotFound;
@@ -26,6 +27,7 @@ public class FileHandler implements DirExplorer.FileHandler {
     private UnitManager unitManager = UnitManager.getInstance();
     private ClassParser classParser = ClassParser.getInstance();
     private FileManagerClass fileManagerClass = FileManagerClass.getInstance();
+    private ClassAndParentManager classAndParentManager = ClassAndParentManager.getInstance();
 
     private Set<String> activityClassNames = new HashSet<String>();
     private Set<String> fragmentClassNames = new HashSet<String>();
@@ -46,9 +48,18 @@ public class FileHandler implements DirExplorer.FileHandler {
     }
 
     //Method for executing tasks which should be executed before main handling
-    public void preHandle(int level, String path, File file){
+    public void preHandle(int level, String path, File file) {
         //save class and parent class
 
+        if(classParser.hasParentClass(file)) {
+            try {
+                classAndParentManager.setClassAndParent(classParser.getFullClassName(file), classParser.getParentClassFullPackage(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void handle(int level, String path, File file) {
@@ -62,9 +73,12 @@ public class FileHandler implements DirExplorer.FileHandler {
     }
 
     private void handleJava(int level, String path, File file){
-        String packageString = "";
+        if(!classParser.hasParentClass(file)){
+            return;
+        }
+        String parentPackage = "";
         try {
-            packageString = classParser.getParentClassName(file);
+            parentPackage = classParser.getParentClassFullPackage(file);
             System.out.println("Analyzed " + path + " Parent class name : " + classParser.getParentClassName(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -72,29 +86,71 @@ public class FileHandler implements DirExplorer.FileHandler {
             e.printStackTrace();
         }
 
-        if(classParser.isAndroidPackage(packageString)) {
-            if (activityClassNames.contains(classParser.getClassNameFromPackage(packageString))) {
-                ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
-                //save layoutUnit
-                try {
-                    activityUnit.setLayoutUnit(getLayoutUnitFromComponent(file));
-                    System.out.println("SetLayoutUnit of : " + file.getName());
-                } catch (XmlLayoutNotFound xmlLayoutNotFound) {
-                    xmlLayoutNotFound.printStackTrace();
+        if(classParser.isAndroidPackage(parentPackage)){
+            handleViewComponentClass(parentPackage, file);
+        }else{
+            String tmpParentPackage = parentPackage;
+            while(true){
+                if(classAndParentManager.hasChild(tmpParentPackage)){
+                    tmpParentPackage = classAndParentManager.getParentPackageByChild(tmpParentPackage);
+
+                    if(classParser.isAndroidPackage(parentPackage)){
+                        handleViewComponentClass(parentPackage, file);
+                        break;
+                    }
+                }else{
+                    break;
                 }
-
-                unitManager.addActivity(getFileName(file), activityUnit);
-            } else if (fragmentClassNames.contains(classParser.getClassNameFromPackage(packageString))) {
-                FragmentUnit fragmentUnit = new FragmentUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
-
-                try {
-                    fragmentUnit.setLayoutUnit(getLayoutUnitFromComponent(file));
-                } catch (XmlLayoutNotFound xmlLayoutNotFound) {
-                    xmlLayoutNotFound.printStackTrace();
-                }
-
-                unitManager.addFragment(getFileName(file), fragmentUnit);
             }
+        }
+
+//        if(classParser.isAndroidPackage(packageString)) {
+//            if (activityClassNames.contains(classParser.getClassNameFromPackage(packageString))) {
+//                ActivityUnit activityUnit = new ActivityUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+//                //save layoutUnit
+//                try {
+//                    activityUnit.setLayoutUnit(getLayoutUnitFromComponent(file));
+//                    System.out.println("SetLayoutUnit of : " + file.getName());
+//                } catch (XmlLayoutNotFound xmlLayoutNotFound) {
+//                    xmlLayoutNotFound.printStackTrace();
+//                }
+//
+//                unitManager.addActivity(getFileName(file), activityUnit);
+//            } else if (fragmentClassNames.contains(classParser.getClassNameFromPackage(packageString))) {
+//                FragmentUnit fragmentUnit = new FragmentUnit(getFileName(file), LocalFileSystem.getInstance().findFileByIoFile(file));
+//
+//                try {
+//                    fragmentUnit.setLayoutUnit(getLayoutUnitFromComponent(file));
+//                } catch (XmlLayoutNotFound xmlLayoutNotFound) {
+//                    xmlLayoutNotFound.printStackTrace();
+//                }
+//
+//                unitManager.addFragment(getFileName(file), fragmentUnit);
+//            }
+//        }
+    }
+
+    private void handleViewComponentClass(String parentPackage, File classFile){
+        if(activityClassNames.contains(classParser.getClassNameFromPackage(parentPackage))){
+            ActivityUnit activityUnit = new ActivityUnit(getFileName(classFile), LocalFileSystem.getInstance().findFileByIoFile(classFile));
+            //save layoutUnit
+            try {
+                activityUnit.setLayoutUnit(getLayoutUnitFromComponent(classFile));
+                System.out.println("SetLayoutUnit of : " + classFile.getName());
+            } catch (XmlLayoutNotFound xmlLayoutNotFound) {
+                xmlLayoutNotFound.printStackTrace();
+            }
+            unitManager.addActivity(getFileName(classFile), activityUnit);
+        }else if(fragmentClassNames.contains(classParser.getClassNameFromPackage(parentPackage))){
+            FragmentUnit fragmentUnit = new FragmentUnit(getFileName(classFile), LocalFileSystem.getInstance().findFileByIoFile(classFile));
+
+            try {
+                fragmentUnit.setLayoutUnit(getLayoutUnitFromComponent(classFile));
+            } catch (XmlLayoutNotFound xmlLayoutNotFound) {
+                xmlLayoutNotFound.printStackTrace();
+            }
+
+            unitManager.addFragment(getFileName(classFile), fragmentUnit);
         }
     }
 

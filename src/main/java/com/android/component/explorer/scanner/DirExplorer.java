@@ -1,5 +1,7 @@
 package com.android.component.explorer.scanner;
 
+import com.google.common.io.Files;
+
 import java.io.File;
 
 /**
@@ -12,6 +14,7 @@ public class DirExplorer {
 
     public interface FileHandler {
         void handle(int level, String path, File file);
+        void preHandle(int level, String path, File file);
     }
 
     public interface Filter {
@@ -44,15 +47,31 @@ public class DirExplorer {
                 explore(level + 1, path + "/" + child.getName(), child);
             }
         } else {
-            if(handleAll){
+            if (handleAll) {
                 System.out.println("handling : " + path);
                 fileHandler.handle(level, path, file);
-            }
-            else if (filter.interested(level, path, file)) {
+            } else if (filter.interested(level, path, file)) {
                 System.out.println("handling : " + path);
                 fileHandler.handle(level, path, file);
             }
             System.out.println(path);
+        }
+    }
+
+    //preExplore executes tasks which should be executed before main exploring
+    public void preExplore(File root) {
+        preExplore(0, "", root);
+    }
+
+    private void preExplore(int level, String path, File file) {
+        if (file.isDirectory()) {
+            for (File child : file.listFiles()) {
+                preExplore(level + 1, path + "/" + child.getName(), child);
+            }
+        } else {
+            if (Files.getFileExtension(file.getName()).equals("java")){
+                this.fileHandler.preHandle(level, path, file);
+            }
         }
     }
 }
