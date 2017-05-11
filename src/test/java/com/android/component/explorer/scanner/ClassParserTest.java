@@ -49,9 +49,10 @@ public class ClassParserTest {
 
     @Test
     public void isAndroidPackage() throws Exception {
-        assertEquals(true, classParser.isAndroidPackage("Activity"));
+        assertEquals(true, classParser.isAndroidPackage("android.support.Activity"));
         assertEquals(false, classParser.isAndroidPackage("this.is.test.case.android"));
         assertEquals(true, classParser.isAndroidPackage("android.test.case"));
+        assertEquals(true, classParser.isAndroidPackage("android.support.v4.app.DialogFragment"));
     }
     @Test
     public void getFullClassName(){
