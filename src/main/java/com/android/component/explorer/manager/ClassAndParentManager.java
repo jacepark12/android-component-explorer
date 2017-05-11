@@ -30,4 +30,8 @@ public class ClassAndParentManager {
         return this.classAndParent.get(child);
     }
 
+    public boolean hasChild(String child){
+        return this.classAndParent.containsKey(child);
+    }
+
 }
