@@ -142,8 +142,9 @@ public class ClassParser {
 
     public String getParentClassFullPackage(File classFile) throws FileNotFoundException, ParseException {
         String parentClass = getParentClassName(classFile);
-        String regexr = "import \\S+" + parentClass;
+        String regexr = "import \\S*" + parentClass + ";";
 
+        System.out.println("regexr : " + regexr);
         String parentClassFullPackage = "";
 
         boolean importFound = false;
@@ -151,7 +152,9 @@ public class ClassParser {
         ArrayList<String> classSources = getClassLineByLine(classFile);
 
         for(String classSource : classSources){
+            System.out.println("classSource : " + classSource);
             if(classSource.matches(regexr)){
+                System.out.println("matches : " + classSource);
                 parentClassFullPackage = classSource.split(" ")[1].replaceAll(";", "");
 
                 importFound = true;
