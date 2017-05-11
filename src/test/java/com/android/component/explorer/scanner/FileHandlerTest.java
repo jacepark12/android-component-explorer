@@ -44,16 +44,4 @@ public class FileHandlerTest {
         assertEquals("FileHandlerTest", result);
     }
 
-    @Test
-    public void getClassNameFromPackage() throws Exception {
-        assertEquals("AppCompatActivity" , fileHandler.getClassNameFromPackage("AppCompatActivity"));
-        assertEquals("DialogFragment" , fileHandler.getClassNameFromPackage("android.support.v4.app.DialogFragment"));
-    }
-
-    @Test
-    public void isAndroidPackage() throws Exception {
-        assertEquals(true, fileHandler.isAndroidPackage("Activity"));
-        assertEquals(false, fileHandler.isAndroidPackage("this.is.test.case.android"));
-        assertEquals(true, fileHandler.isAndroidPackage("android.test.case"));
-    }
 }

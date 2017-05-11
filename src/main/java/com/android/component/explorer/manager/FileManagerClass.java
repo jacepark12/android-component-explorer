@@ -8,6 +8,9 @@ import java.util.HashMap;
 /**
  * Created by parkjaesung on 2017. 5. 8..
  */
+/*
+saves file name & file path
+ */
 public class FileManagerClass {
 
     private static FileManagerClass instance;
