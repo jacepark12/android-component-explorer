@@ -26,6 +26,12 @@ Recommends to download from github release)
  - [ ] AutoMatic Refresh  
  - [ ] Develop customTreeProvider
  
+ # Version Update
+ 
+ * v0.1 - First Release
+ 
+ * v0.2 - Scans XML layout file inflated by Activity and Fragment class
+ 
 # LICENSE
 
 Copyright (c) 2017 Park Jaesung
