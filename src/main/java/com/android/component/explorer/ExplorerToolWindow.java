@@ -9,6 +9,7 @@ import com.android.component.explorer.scanner.Filter;
 import com.android.component.explorer.unit.ActivityUnit;
 import com.android.component.explorer.unit.ComponentUnit;
 import com.android.component.explorer.unit.FragmentUnit;
+import com.android.component.explorer.unit.LayoutUnit;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -116,6 +117,7 @@ public class ExplorerToolWindow implements ToolWindowFactory {
                 if(e.getClickCount() == 2){
                     DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
+                    assert selectedNode !=null;
                     Object userObject = selectedNode.getUserObject();
 
                     if(userObject instanceof ComponentUnit){
@@ -170,10 +172,13 @@ public class ExplorerToolWindow implements ToolWindowFactory {
                 DefaultMutableTreeNode activityFolderSubNode = new DefaultMutableTreeNode(activityUnit.getName());
 
                 DefaultMutableTreeNode activitySubNode = new DefaultMutableTreeNode(activityUnit);
-                DefaultMutableTreeNode layoutSubNode = new DefaultMutableTreeNode(activityUnit.getLayoutUnit());
+
+                for(LayoutUnit layoutUnit : activityUnit.getLayoutUnits()){
+                    DefaultMutableTreeNode layoutSubNode = new DefaultMutableTreeNode(layoutUnit);
+                    activityFolderSubNode.add(layoutSubNode);
+                }
 
                 activityFolderSubNode.add(activitySubNode);
-                activityFolderSubNode.add(layoutSubNode);
 
                 activityNode.add(activityFolderSubNode);
             }else{
@@ -194,10 +199,13 @@ public class ExplorerToolWindow implements ToolWindowFactory {
                 DefaultMutableTreeNode fragmentFolderSubNode = new DefaultMutableTreeNode(fragmentUnit.getName());
 
                 DefaultMutableTreeNode fragmentSubNode = new DefaultMutableTreeNode(fragmentUnit);
-                DefaultMutableTreeNode layoutSubNode = new DefaultMutableTreeNode(fragmentUnit.getLayoutUnit());
+
+                for (LayoutUnit layoutUnit : fragmentUnit.getLayoutUnits()){
+                    DefaultMutableTreeNode layoutSubNode = new DefaultMutableTreeNode(layoutUnit);
+                    fragmentFolderSubNode.add(layoutSubNode);
+                }
 
                 fragmentFolderSubNode.add(fragmentSubNode);
-                fragmentFolderSubNode.add(layoutSubNode);
 
                 fragmentNode.add(fragmentFolderSubNode);
             }
