@@ -131,6 +131,9 @@ public class ExplorerToolWindow implements ToolWindowFactory {
 
     private void scanProject(String rootDir){
         System.out.println("scanning project");
+        UnitManager unitManager = UnitManager.getInstance();
+        unitManager.clearUnits();
+
         DirExplorer dirExplorer = new DirExplorer(Filter.getInstance(), FileHandler.getInstance());
 
         //scan xml layout resources dir first
@@ -146,8 +149,6 @@ public class ExplorerToolWindow implements ToolWindowFactory {
         dirExplorer.preExplore(file);
 
         dirExplorer.explore(file);
-
-        UnitManager unitManager = UnitManager.getInstance();
 
         //update Jtable
         //set number of activities
