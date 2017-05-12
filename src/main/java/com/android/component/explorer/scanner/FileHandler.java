@@ -14,6 +14,7 @@ import com.google.common.io.Files;
 import com.intellij.openapi.vfs.LocalFileSystem;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -77,6 +78,7 @@ public class FileHandler implements DirExplorer.FileHandler {
             return;
         }
         String parentPackage = "";
+        String classPackage = classParser.getFullClassName(file);
         try {
             parentPackage = classParser.getParentClassFullPackage(file);
             System.out.println("Analyzed " + path + " Parent class name : " + classParser.getParentClassName(file));
@@ -92,10 +94,14 @@ public class FileHandler implements DirExplorer.FileHandler {
             String tmpParentPackage = parentPackage;
             while(true){
                 if(classAndParentManager.hasChild(tmpParentPackage)){
+                    System.out.println("hasChild : " + tmpParentPackage);
                     tmpParentPackage = classAndParentManager.getParentPackageByChild(tmpParentPackage);
+                    System.out.println("getParentPackageByChild : " + tmpParentPackage);
 
-                    if(classParser.isAndroidPackage(parentPackage)){
-                        handleViewComponentClass(parentPackage, file);
+                    if(classParser.isAndroidPackage(tmpParentPackage)){
+
+                        System.out.println("this is androidPackage : " + tmpParentPackage);
+                        handleViewComponentClass(tmpParentPackage, file);
                         break;
                     }
                 }else{
@@ -131,11 +137,12 @@ public class FileHandler implements DirExplorer.FileHandler {
     }
 
     private void handleViewComponentClass(String parentPackage, File classFile){
+        System.out.println("handleViewComponentClass : " + parentPackage);
         if(activityClassNames.contains(classParser.getClassNameFromPackage(parentPackage))){
             ActivityUnit activityUnit = new ActivityUnit(getFileName(classFile), LocalFileSystem.getInstance().findFileByIoFile(classFile));
             //save layoutUnit
             try {
-                activityUnit.setLayoutUnit(getLayoutUnitFromComponent(classFile));
+                activityUnit.setLayoutUnits(getLayoutUnitFromComponents(classFile));
                 System.out.println("SetLayoutUnit of : " + classFile.getName());
             } catch (XmlLayoutNotFound xmlLayoutNotFound) {
                 xmlLayoutNotFound.printStackTrace();
@@ -145,7 +152,7 @@ public class FileHandler implements DirExplorer.FileHandler {
             FragmentUnit fragmentUnit = new FragmentUnit(getFileName(classFile), LocalFileSystem.getInstance().findFileByIoFile(classFile));
 
             try {
-                fragmentUnit.setLayoutUnit(getLayoutUnitFromComponent(classFile));
+                fragmentUnit.setLayoutUnits(getLayoutUnitFromComponents(classFile));
             } catch (XmlLayoutNotFound xmlLayoutNotFound) {
                 xmlLayoutNotFound.printStackTrace();
             }
@@ -154,10 +161,11 @@ public class FileHandler implements DirExplorer.FileHandler {
         }
     }
 
-    private LayoutUnit getLayoutUnitFromComponent(File classFile) throws XmlLayoutNotFound {
-        String layoutFileName = "";
+    private ArrayList<LayoutUnit> getLayoutUnitFromComponents(File classFile) throws XmlLayoutNotFound {
+        ArrayList<LayoutUnit> result = new ArrayList<LayoutUnit>();
+        ArrayList<String> layoutFileNames = new ArrayList<String>();
         try {
-            layoutFileName = classParser.getLayoutXMLName(classFile);
+            layoutFileNames = classParser.getLayoutXMLNames(classFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -165,8 +173,13 @@ public class FileHandler implements DirExplorer.FileHandler {
         } catch (ClassParseException e) {
             e.printStackTrace();
         }
-        System.out.println("getLayoutUnitFromComponent : " + layoutFileName);
-        return new LayoutUnit(layoutFileName, LocalFileSystem.getInstance().findFileByIoFile(fileManagerClass.getXmlLayoutFileByName(layoutFileName)));
+
+        for (String layoutFileName : layoutFileNames){
+            System.out.println("getLayoutUnitFromComponent : " + layoutFileName);
+            result.add(new LayoutUnit(layoutFileName, LocalFileSystem.getInstance().findFileByIoFile(fileManagerClass.getXmlLayoutFileByName(layoutFileName))));
+        }
+
+        return result;
     }
 
     private void handleLayoutXML(int level, String path, File file){
