@@ -18,7 +18,7 @@ Recommends to download from github release)
 # Contribution
 
 * Open pull request are welcomed
-* Reach out to me directly at jspark141515.com
+* Reach out to me directly at jspark141515@gmail.com
 * Please open issue if you have opinions for this project
 
 # TODO
